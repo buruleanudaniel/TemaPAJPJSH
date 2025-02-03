@@ -1,25 +1,22 @@
 package com.example.gymsystem.entity;
 
-import com.example.gymsystem.entity.Membership;
 import jakarta.persistence.*;
-import lombok.Data;
-import org.hibernate.validator.constraints.Length;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Length(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
-
-    @Column(unique = true)
     private String email;
-
     private LocalDate registrationDate;
 
     @ManyToOne

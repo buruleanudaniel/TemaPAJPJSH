@@ -1,20 +1,22 @@
 package com.example.gymsystem.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Duration;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class Membership {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String planName;
+    private String planName; // Ensure this field exists
     private double price;
-    private Duration duration; // Duration of the membership in days
+    private Duration duration;
 
     public Membership() {}
 
