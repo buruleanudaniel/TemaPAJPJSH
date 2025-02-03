@@ -3,53 +3,63 @@ package com.example.gymsystem;
 import com.example.gymsystem.entity.Member;
 import com.example.gymsystem.entity.Membership;
 import com.example.gymsystem.repository.MemberRepository;
+import com.example.gymsystem.repository.MembershipRepository;
 import com.example.gymsystem.service.ReportService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.Arrays;
-import java.util.List;
+import java.time.Duration;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
 
+@DataJpaTest
 class ReportServiceTest {
 
-    @Mock
+    @Autowired
     private MemberRepository memberRepository;
 
-    @InjectMocks
+    @Autowired
+    private MembershipRepository membershipRepository;
+
     private ReportService reportService;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        // Save Memberships using membershipRepository
+        Membership basic = new Membership("Basic", 50.0, java.time.Duration.ofDays(30));
+        basic = membershipRepository.save(basic);
+
+        Membership premium = new Membership("Premium", 100.0, java.time.Duration.ofDays(90));
+        premium = membershipRepository.save(premium);
+
+        // Save Members with memberships using memberRepository
+        memberRepository.save(new Member("Alice", "alice@example.com", basic));
+        memberRepository.save(new Member("Bob", "bob@example.com", premium));
+        memberRepository.save(new Member("Charlie", "charlie@example.com", basic));
+
+        // Add a member without a membership
+        memberRepository.save(new Member("Diana", "diana@example.com", null)); // No membership
+
+        // Initialize the ReportService
+        reportService = new ReportService(memberRepository);
     }
 
     @Test
     void testGenerateMembershipReport() {
-        // Mock data
-        Membership basic = new Membership("Basic", 50.0, java.time.Duration.ofDays(30));
-        Membership premium = new Membership("Premium", 100.0, java.time.Duration.ofDays(90));
-
-        Member alice = new Member("Alice", "alice@example.com", basic);
-        Member bob = new Member("Bob", "bob@example.com", premium);
-        Member charlie = new Member("Charlie", "charlie@example.com", basic);
-        Member diana = new Member("Diana", "diana@example.com", null);
-
-        when(memberRepository.findAll()).thenReturn(Arrays.asList(alice, bob, charlie, diana));
-
-        // Generate the report
+        // Generate the membership report
         Map<String, Long> report = reportService.generateMembershipReport();
 
         // Verify the result
-        assertEquals(3, report.size());
-        assertEquals(2L, report.get("Basic"));
-        assertEquals(1L, report.get("Premium"));
-        assertEquals(1L, report.get("No Membership"));
+        assertNotNull(report);
+        assertFalse(report.isEmpty(), "Report should not be empty");
+
+        // Check the counts for each membership plan
+        assertEquals(3, report.size(), "Expected three membership plans: Basic, Premium, and No Membership");
+        assertEquals(2L, report.get("Basic"), "Basic plan should have 2 members");
+        assertEquals(1L, report.get("Premium"), "Premium plan should have 1 member");
+        assertEquals(1L, report.get("No Membership"), "No Membership should have 1 member");
     }
 }

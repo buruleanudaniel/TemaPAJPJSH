@@ -1,7 +1,6 @@
 package com.example.gymsystem.service;
 
 import com.example.gymsystem.entity.Member;
-import com.example.gymsystem.entity.Membership;
 import com.example.gymsystem.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,16 +28,13 @@ public class ReportService {
      * @return A map where the key is the membership plan name and the value is the count of members.
      */
     public Map<String, Long> generateMembershipReport() {
-        // Fetch all members from the database
         List<Member> members = memberRepository.findAll();
 
-        // Use streams to group members by membership plan name and count them
         return members.stream()
-                .filter(member -> member.getMembership() != null) // Exclude members without a membership
                 .collect(Collectors.groupingBy(
                         member -> Optional.ofNullable(member.getMembership())
-                                .map(Membership::getPlanName)
-                                .orElse("No Membership"), // Handle null plan names gracefully
+                                .map(membership -> membership.getPlanName() != null ? membership.getPlanName() : "No Membership")
+                                .orElse("No Membership"), // Fallback for null memberships
                         Collectors.counting()
                 ));
     }

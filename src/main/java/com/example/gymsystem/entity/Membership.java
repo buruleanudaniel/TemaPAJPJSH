@@ -14,7 +14,7 @@ public class Membership {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String planName; // Ensure this field exists
+    private String planName;
     private double price;
     private Duration duration;
 
