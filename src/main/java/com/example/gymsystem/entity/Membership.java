@@ -3,10 +3,12 @@ package com.example.gymsystem.entity;
 import jakarta.persistence.*;
 
 import lombok.Data;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+@Getter
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Data
@@ -21,32 +23,16 @@ public abstract class Membership {
     @OneToMany(mappedBy = "membership")
     private List<Member> members;
 
-    public Long getId() {
-        return id;
-    }
-
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public void setType(String type) {
         this.type = type;
     }
 
-    public BigDecimal getPrice() {
-        return price;
-    }
-
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public List<Member> getMembers() {
-        return members;
     }
 
     public void setMembers(List<Member> members) {
