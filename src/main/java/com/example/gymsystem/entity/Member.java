@@ -1,10 +1,12 @@
 package com.example.gymsystem.entity;
 
+import com.example.gymsystem.entity.Membership;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
+import org.hibernate.validator.constraints.Length;
+import java.time.LocalDate;
+import java.util.List;
 
-@Getter
 @Entity
 @Data
 public class Member {
@@ -12,32 +14,26 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Length(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
+
+    @Column(unique = true)
     private String email;
+
+    private LocalDate registrationDate;
 
     @ManyToOne
     private Membership membership;
 
-    @ManyToOne
-    private Trainer trainer;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<WorkoutPlan> workoutPlans;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Member() {}
 
-    public void setName(String name) {
+    public Member(String name, String email, Membership membership) {
         this.name = name;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setMembership(Membership membership) {
         this.membership = membership;
-    }
-
-    public void setTrainer(Trainer trainer) {
-        this.trainer = trainer;
+        this.registrationDate = LocalDate.now();
     }
 }

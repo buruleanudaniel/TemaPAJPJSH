@@ -1,41 +1,26 @@
 package com.example.gymsystem.entity;
 
 import jakarta.persistence.*;
-
 import lombok.Data;
-import lombok.Getter;
 
-import java.math.BigDecimal;
-import java.util.List;
+import java.time.Duration;
 
-@Getter
-@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Data
-public abstract class Membership {
+public class Membership {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String type;
-    private BigDecimal price;
+    private String planName;
+    private double price;
+    private Duration duration; // Duration of the membership in days
 
-    @OneToMany(mappedBy = "membership")
-    private List<Member> members;
+    public Membership() {}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setPrice(BigDecimal price) {
+    public Membership(String planName, double price, Duration duration) {
+        this.planName = planName;
         this.price = price;
-    }
-
-    public void setMembers(List<Member> members) {
-        this.members = members;
+        this.duration = duration;
     }
 }
