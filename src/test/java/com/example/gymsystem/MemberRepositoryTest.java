@@ -22,7 +22,7 @@ class MemberRepositoryTest {
     private MemberRepository memberRepository;
 
     @Autowired
-    private MembershipRepository membershipRepository; // Inject MembershipRepository
+    private MembershipRepository membershipRepository;
 
     private Membership membership;
 
@@ -30,7 +30,8 @@ class MemberRepositoryTest {
     void setUp() {
         // Save the Membership first
         membership = new Membership("Basic", 50.0, java.time.Duration.ofDays(30));
-        membershipRepository.save(membership);
+        membership = membershipRepository.save(membership); // Reassign to capture the persisted entity
+        assertNotNull(membership);
 
         // Save Members with the saved Membership
         memberRepository.save(new Member("John", "john@example.com", membership));
