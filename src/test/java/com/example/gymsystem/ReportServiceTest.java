@@ -28,31 +28,29 @@ class ReportServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Save Memberships using membershipRepository
+
+        // salvare abonamente
         Membership basic = new Membership("Basic", 50.0, java.time.Duration.ofDays(30));
         basic = membershipRepository.save(basic);
 
         Membership premium = new Membership("Premium", 100.0, java.time.Duration.ofDays(90));
         premium = membershipRepository.save(premium);
 
-        // Save Members with memberships using memberRepository
+        // salvare clienti
         memberRepository.save(new Member("Alice", "alice@example.com", basic));
         memberRepository.save(new Member("Bob", "bob@example.com", premium));
         memberRepository.save(new Member("Charlie", "charlie@example.com", basic));
 
-        // Add a member without a membership
+        // adaugare client fara abonament
         memberRepository.save(new Member("Diana", "diana@example.com", null)); // No membership
 
-        // Initialize the ReportService
+        // initializare report service
         reportService = new ReportService(memberRepository);
     }
 
     @Test
     void testGenerateMembershipReport() {
-        // Generate the membership report
         Map<String, Long> report = reportService.generateMembershipReport();
-
-        // Verify the result
         assertNotNull(report);
         assertFalse(report.isEmpty(), "Report should not be empty");
 
