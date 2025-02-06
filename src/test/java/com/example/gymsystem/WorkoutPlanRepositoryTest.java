@@ -34,19 +34,15 @@ class WorkoutPlanRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // Save a Member
         member = new Member("Alice", "alice@example.com", null);
         member = memberRepository.save(member);
 
-        // Save a Trainer
         trainer = new Trainer("John Doe", "Strength Training");
         trainer = trainerRepository.save(trainer);
 
-        // Save a WorkoutPlan associated with the Member and Trainer
         workoutPlan = new WorkoutPlan("Upper Body Workout", LocalDate.now(), member, trainer);
-        workoutPlanRepository.save(workoutPlan); // Ensure the WorkoutPlan is saved
+        workoutPlanRepository.save(workoutPlan);
 
-        // Verify that the WorkoutPlan was saved
         assertNotNull(workoutPlan.getId());
         assertEquals(member.getId(), workoutPlan.getMember().getId());
         assertEquals(trainer.getId(), workoutPlan.getTrainer().getId());
@@ -61,15 +57,12 @@ class WorkoutPlanRepositoryTest {
 
     @Test
     void testFindByMemberId() {
-        // Query for WorkoutPlans associated with the Member
         List<WorkoutPlan> plans = workoutPlanRepository.findByMember_Id(member.getId());
 
-        // Verify the result
         assertNotNull(plans);
         assertFalse(plans.isEmpty(), "Expected at least one workout plan");
         assertEquals(1, plans.size(), "Expected exactly one workout plan");
 
-        // Verify the details of the retrieved plan
         WorkoutPlan retrievedPlan = plans.get(0);
         assertNotNull(retrievedPlan);
         assertEquals(workoutPlan.getDescription(), retrievedPlan.getDescription());
@@ -80,15 +73,12 @@ class WorkoutPlanRepositoryTest {
 
     @Test
     void testFindByTrainerId() {
-        // Query for WorkoutPlans associated with the Trainer
         List<WorkoutPlan> plans = workoutPlanRepository.findByTrainer_Id(trainer.getId());
 
-        // Verify the result
         assertNotNull(plans);
         assertFalse(plans.isEmpty(), "Expected at least one workout plan");
         assertEquals(1, plans.size(), "Expected exactly one workout plan");
 
-        // Verify the details of the retrieved plan
         WorkoutPlan retrievedPlan = plans.get(0);
         assertNotNull(retrievedPlan);
         assertEquals(workoutPlan.getDescription(), retrievedPlan.getDescription());

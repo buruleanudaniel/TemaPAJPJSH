@@ -11,12 +11,15 @@ import com.example.gymsystem.repository.WorkoutPlanRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Configuration
 public class DataInitializer {
+    private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
 
     @Bean
     CommandLineRunner initDatabase(
@@ -39,8 +42,13 @@ public class DataInitializer {
             Member bob = memberRepository.save(new Member("Bob Brown", "bob@example.com", premium));
 
             // Create Workout Plans
-            workoutPlanRepository.save(new WorkoutPlan("Upper Body Workout", alice, trainer1));
-            workoutPlanRepository.save(new WorkoutPlan("Core Strengthening", bob, trainer2));
+            WorkoutPlan upperBodyWorkout = new WorkoutPlan("Upper Body Workout", LocalDate.now(), alice, trainer1);
+            WorkoutPlan coreStrengthening = new WorkoutPlan("Core Strengthening", LocalDate.now(), bob, trainer2);
+
+            workoutPlanRepository.save(upperBodyWorkout);
+            workoutPlanRepository.save(coreStrengthening);
+
+            logger.info("Initialized Workout Plans: {}", workoutPlanRepository.findAll().size());
         };
     }
 }

@@ -28,12 +28,10 @@ class MemberRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // Save the Membership first
         membership = new Membership("Basic", 50.0, java.time.Duration.ofDays(30));
-        membership = membershipRepository.save(membership); // Reassign to capture the persisted entity
+        membership = membershipRepository.save(membership);
         assertNotNull(membership);
 
-        // Save Members with the saved Membership
         memberRepository.save(new Member("John", "john@example.com", membership));
         memberRepository.save(new Member("Jane", "jane@example.com", membership));
     }
